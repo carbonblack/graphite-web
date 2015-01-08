@@ -115,7 +115,7 @@ class CeresReader(object):
     intervals = []
     for info in self.ceres_node.slice_info:
       (start, end, step) = info
-      intervals.append( Interval(start, end) )
+      intervals.append(Interval(start, end))
 
     return IntervalSet(intervals)
 
@@ -152,9 +152,8 @@ class WhisperReader(object):
     self.real_metric_path = real_metric_path
 
   def get_intervals(self):
-    start = time.time() - whisper.info(self.fs_path)['maxRetention']
-    end = max( os.stat(self.fs_path).st_mtime, start )
-    return IntervalSet( [Interval(start, end)] )
+    header = whisper.info(self.fs_path)
+    return IntervalSet( [Interval(header.minTime, header.maxTime)] )
 
   def fetch(self, startTime, endTime):
     data = whisper.fetch(self.fs_path, startTime, endTime)
